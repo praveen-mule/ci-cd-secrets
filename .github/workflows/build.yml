@@ -1,10 +1,10 @@
-name: Publish to Exchange & Deploy to CH2.0
+name: Deploy to CloudHub 2.0
 
 on:
   push:
     branches: [ main ]
-    
-jobs:         
+
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
@@ -23,12 +23,7 @@ jobs:
         with:
           distribution: "zulu"
           java-version: 8
-      
-      - name: Publish to Exchange
-        run: |
-          mvn deploy --settings .maven/setting.xml -DskipMunitTests -X \
-          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
-          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}"
+
       - name: Deploy to CloudHub 2.0
         run: |
           mvn deploy --settings .maven/setting.xml -DskipMunitTests -DmuleDeploy \

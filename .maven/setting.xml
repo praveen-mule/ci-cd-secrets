@@ -8,8 +8,8 @@
   <servers>
     <server>
       <id>Repository</id>
-      <username>~~~Client~~~</username>
-      <password>${client.id}~?~${client.secret}</password>
+      <username>${{ secrets.CONNECTED_APP_CLIENT_ID }}</username>
+      <password>${{ secrets.CONNECTED_APP_CLIENT_SECRET }}</password>
     </server>
   </servers>
 

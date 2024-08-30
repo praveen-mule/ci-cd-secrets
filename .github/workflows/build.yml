@@ -1,31 +1,35 @@
-name: Deploy to CloudHub 2.0
+name: Deploy to CloudHub
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout this repo
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
-
-      - name: Set up JDK 1.8
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: "zulu"
-          java-version: 8
+          distribution: 'temurin'
+          java-version: '8'
 
-      - name: Deploy to CloudHub 2.0
-        run: |
-          mvn deploy --settings .maven/setting.xml -DskipMunitTests -DmuleDeploy \
-          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
-          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}"
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Deploy to CloudHub
+        run: mvn deploy
+        env:
+          muleDeployUser: ${{ secrets.ANYPOINT_USERNAME }}
+          muleDeployPassword: ${{ secrets.ANYPOINT_PASSWORD }}
